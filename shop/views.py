@@ -12,7 +12,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
-from shop.models import Item, Order, Product,Category, Size
+from django.http import JsonResponse
+from shop.models import Item, Order, Product,Category, Size, ProductSize
 from .forms import SignUpForm
 from .utils.constant import LENGTH_PAGE, STATUS_ORDER, FILTER
 import re
@@ -105,6 +106,7 @@ class ProductDetailView(DetailView):
         category = context['product'].category
         product = Product.objects.filter(category=category)
         context['related_products'] = format_data(product)
+        context['size'] = context['product'].productsize_set.select_related('size')
         for value in context['product'].image_set.all():
             url = value.url.split('.')
             id =  url[0]
@@ -311,3 +313,14 @@ def format_data_order(orders):
         setattr(order, "total", total) 
         list_order.append(order)
     return list_order
+
+
+def get_size(request,pk):
+    url = request.META.get('HTTP_REFERER') 
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id = pk)
+        size = get_object_or_404(Size, description = request.POST.get('size'))
+        product_size = get_object_or_404(ProductSize, product = product, size = size)
+        # amount = size()
+        return JsonResponse({'amount':product_size.amount})
+    return HttpResponseRedirect(url)
