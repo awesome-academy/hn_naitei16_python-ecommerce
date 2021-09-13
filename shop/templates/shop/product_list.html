@@ -51,9 +51,9 @@
                                                 <i class="fa fa-heart" aria-hidden="true"></i>
                                             </a>
                                         {% else %}
-                                            <a href="{% url 'shop:user_wishlist' item.product.id %}" class="block2-btn-addwishlist hov-pointer trans-0-4">
+                                            <p product-id="{{item.product.id}}" class="add_wishlist block2-btn-addwishlist hov-pointer trans-0-4">
                                                 <i class="fa fa-heart-o empty" aria-hidden="true"></i>
-                                            </a>
+                                            </p>
                                         {% endif %}
                                     {% endif %}
                                     <div class="block2-btn-addcart w-size1 trans-0-4">
@@ -136,4 +136,5 @@
         </div>
     </div>
 </section>
+<script type="text/javascript" src="{% static 'js/wishlist.js' %}" ></script>
 {% endblock content %}
